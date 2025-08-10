@@ -4,7 +4,6 @@ import { UserRepository } from '../repositories';
 import {
   UserCreateRequestDto,
   UserDetailGetResponseDto,
-  UserUpdateStatusRequestDto,
   UserUpdateRequestDto,
   CheckExistsUserRequestDto,
 } from '../../../common/dto';
@@ -60,26 +59,5 @@ export class UserService {
     } catch (error) {
       throw new BadRequestException(error);
     }
-  }
-
-  async updateUserStatusByIds(data: UserUpdateStatusRequestDto): Promise<any> {
-    const result: { countSuccess: number; error: any } = { countSuccess: 0, error: [] };
-
-    for (const userId of data.userIds) {
-      try {
-        return this.prismaUnitOfWorkService.executeInTransaction(async (prisma) => {
-          const currentUser = this.userRepository.getUserById(prisma, userId);
-          if (!currentUser) {
-            throw new NotFoundException('User not found');
-          }
-
-          await this.userRepository.updateUser(prisma, userId, { status: data.status });
-        });
-      } catch (error) {
-        throw error;
-      }
-    }
-
-    return result;
   }
 }

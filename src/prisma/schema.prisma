@@ -8,14 +8,145 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  status    String   @default("ACTIVE")
-  name      String
-  phone     String
-  email     String
-  password  String
-
+  id                String              @id @default(uuid())
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  status            String              @default("ACTIVE")
+  name              String
+  phone             String
+  email             String
+  password          String
+  budgetCategory    BudgetCategory[]
+  category          Category[]
+  subBudgetCategory SubBudgetCategory[]
+  subCategory       SubCategory[]
+  transaction       Transaction[]
+  account           Account[]
   @@map("users")
+}
+
+model Category {
+  id             String           @id @default(uuid())
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  status         String           @default("ACTIVE")
+  name           String
+  user_id        String           @map("user_id")
+  budgetCategory BudgetCategory[]
+  user           User             @relation(fields: [user_id], references: [id])
+  subCategory    SubCategory[]
+  transaction    Transaction[]
+
+  @@index([user_id], map: "categories_user_id_fkey")
+  @@map("categories")
+}
+
+model SubCategory {
+  id                String              @id @default(uuid())
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  status            String              @default("ACTIVE")
+  name              String
+  category_id       String              @map("category_id")
+  user_id           String              @map("user_id")
+  subBudgetCategory SubBudgetCategory[]
+  category          Category            @relation(fields: [category_id], references: [id])
+  user              User                @relation(fields: [user_id], references: [id])
+  transaction       Transaction[]
+
+  @@index([category_id], map: "sub_categories_category_id_fkey")
+  @@index([user_id], map: "sub_categories_user_id_fkey")
+  @@map("sub_categories")
+}
+
+model SampleCategory {
+  id                String              @id @default(uuid())
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime            @updatedAt @map("updated_at")
+  status            String              @default("ACTIVE")
+  name              String
+  sampleSubCategory SampleSubCategory[]
+
+  @@map("sample_categories")
+}
+
+model SampleSubCategory {
+  id          String         @id @default(uuid())
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  status      String         @default("ACTIVE")
+  name        String
+  category_id String         @map("category_id")
+  category    SampleCategory @relation(fields: [category_id], references: [id])
+
+  @@index([category_id], map: "sample_sub_categories_category_id_fkey")
+  @@map("sample_sub_categories")
+}
+
+model BudgetCategory {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  status      String   @default("ACTIVE")
+  category_id String   @map("category_id")
+  budget      Float
+  month       String
+  user_id     String   @map("user_id")
+  category    Category @relation(fields: [category_id], references: [id])
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@index([category_id], map: "budget_categories_category_id_fkey")
+  @@index([user_id], map: "budget_categories_user_id_fkey")
+  @@map("budget_categories")
+}
+
+model SubBudgetCategory {
+  id              String      @id @default(uuid())
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+  status          String      @default("ACTIVE")
+  sub_category_id String      @map("sub_category_id")
+  budget          Float
+  month           String
+  user_id         String      @map("user_id")
+  subCategory     SubCategory @relation(fields: [sub_category_id], references: [id])
+  user            User        @relation(fields: [user_id], references: [id])
+
+  @@index([sub_category_id], map: "sub_budget_categories_sub_category_id_fkey")
+  @@index([user_id], map: "sub_budget_categories_user_id_fkey")
+  @@map("sub_budget_categories")
+}
+
+model Transaction {
+  id              String      @id @default(uuid())
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+  status          String      @default("ACTIVE")
+  type            String
+  amount          Float
+  category_id     String      @map("category_id")
+  sub_category_id String      @map("sub_category_id")
+  name            String
+  user_id         String      @map("user_id")
+  category        Category    @relation(fields: [category_id], references: [id])
+  subCategory     SubCategory @relation(fields: [sub_category_id], references: [id])
+  user            User        @relation(fields: [user_id], references: [id])
+
+  @@index([category_id], map: "transactions_category_id_fkey")
+  @@index([sub_category_id], map: "transactions_sub_category_id_fkey")
+  @@index([user_id], map: "transactions_user_id_fkey")
+  @@map("transactions")
+}
+
+model Account {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  status      String   @default("ACTIVE")
+  name        String
+  user_id     String   @map("user_id")
+  user        User     @relation(fields: [user_id], references: [id])
+  
+  @@index([user_id], map: "accounts_user_id_fkey")
+  @@map("accounts")
 }

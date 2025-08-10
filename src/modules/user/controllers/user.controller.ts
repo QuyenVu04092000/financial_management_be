@@ -1,11 +1,6 @@
 import { Controller, Param, Body, Get, Query, Post, Put } from '@nestjs/common';
 import { UserService } from '../services';
-import {
-  UserCreateRequestDto,
-  UserUpdateStatusRequestDto,
-  UserUpdateRequestDto,
-  CheckExistsUserRequestDto,
-} from '../../../common/dto';
+import { UserCreateRequestDto, UserUpdateRequestDto, CheckExistsUserRequestDto } from '../../../common/dto';
 import { NormalResponseDto } from '../../../common/dto';
 import { Public } from '../../auth/decorators/auth.decorator';
 
@@ -13,6 +8,7 @@ import { Public } from '../../auth/decorators/auth.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public()
   @Get('check-exists')
   async checkExistsUser(@Query() query: CheckExistsUserRequestDto): Promise<any> {
     return new NormalResponseDto(await this.userService.checkExistsUser(query));
@@ -27,11 +23,6 @@ export class UserController {
   @Post('')
   async createUser(@Body() data: UserCreateRequestDto): Promise<any> {
     return new NormalResponseDto(await this.userService.createUser(data));
-  }
-
-  @Put('statuses')
-  async updateUserStatuses(@Body() data: UserUpdateStatusRequestDto): Promise<any> {
-    return new NormalResponseDto(await this.userService.updateUserStatusByIds(data));
   }
 
   @Put(':id')

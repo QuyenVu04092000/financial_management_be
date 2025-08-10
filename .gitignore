@@ -45,3 +45,15 @@ yarn.lock
 
 # Media
 /media/report-results
+
+# folder volumes
+/volumes
+
+# folder volumes_redis
+/volumes_redis
+
+#folder volumes_redis_local
+/volumes_redis_local
+volumes/ib_logfile0
+volumes/ibdata1
+volumes/ib_buffer_pool

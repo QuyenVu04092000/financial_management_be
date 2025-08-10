@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, ArrayNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Converter } from '../../utilities/converter';
 
@@ -106,12 +106,4 @@ export class UserChangePasswordRequestDto {
 
   @IsNotEmpty()
   confirmPassword: string;
-}
-
-export class UserUpdateStatusRequestDto {
-  @ArrayNotEmpty()
-  userIds: string[];
-
-  @IsNotEmpty()
-  status: string;
 }
