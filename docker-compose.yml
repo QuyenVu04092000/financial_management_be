@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  mysql-master:
+    image: mysql:5.7.16
+    container_name: pfmp-mysql-master
+    volumes:
+      - ./volumes:/var/lib/mysql
+    ports:
+      - '${MYSQL_PORT}:3306'
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_PASSWORD}']
+      timeout: 20s
+      retries: 10
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    networks:
+      - pfmp
+
+  redis:
+    image: redis:latest
+    container_name: pfmp-redis
+    restart: always
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    volumes:
+      - ./volumes_redis:/root/redis
+      - ./volumes_redis_local:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DATABASES=16
+    networks:
+      - pfmp
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: pfmp-redis-commander
+    environment:
+      - REDIS_HOSTS=local:pfmp-redis:${REDIS_PORT}
+    ports:
+      - '${REDIS_COMMANDER_PORT}:${REDIS_COMMANDER_PORT}'
+    depends_on:
+      - redis
+    networks:
+      - pfmp
+
+networks:
+  pfmp: null
+  # pfmp-ltm_default:
+  #   external: true
