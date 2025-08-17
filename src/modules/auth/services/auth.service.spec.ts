@@ -198,42 +198,6 @@ describe('AuthService', () => {
     });
   });
 
-  describe('register', () => {
-    const mockRegisterData = {
-      name: 'Jane Doe',
-      email: 'jane@example.com',
-      phone: '0987654321',
-      password: 'password123',
-    };
-
-    it('should register user successfully', async () => {
-      // Arrange
-      userRepository.checkExistsUser.mockResolvedValue(null);
-      (Generation.encodePassword as jest.Mock).mockReturnValue('hashedPassword');
-      userRepository.createUser.mockResolvedValue(undefined);
-
-      // Act
-      const result = await service.register({ ...mockRegisterData });
-
-      // Assert
-      expect(userRepository.checkExistsUser).toHaveBeenCalledWith(null, { phone: mockRegisterData.phone });
-      expect(Generation.encodePassword).toHaveBeenCalledWith(mockRegisterData.password);
-      expect(userRepository.createUser).toHaveBeenCalledWith(null, {
-        ...mockRegisterData,
-        password: 'hashedPassword',
-      });
-      expect(result).toBe(true);
-    });
-
-    it('should throw BadRequestException when user already exists', async () => {
-      // Arrange
-      userRepository.checkExistsUser.mockResolvedValue(mockUser);
-
-      // Act & Assert
-      await expect(service.register(mockRegisterData)).rejects.toThrow(BadRequestException);
-    });
-  });
-
   describe('logout', () => {
     it('should logout user successfully', async () => {
       // Arrange

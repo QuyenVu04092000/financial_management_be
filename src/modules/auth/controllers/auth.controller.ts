@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Put, Body } from '@nestjs/common';
+import { Controller, Get, Post, Req, Put, Body, BadRequestException } from '@nestjs/common';
 import { NormalResponseDto, UserChangePasswordRequestDto } from '../../../common/dto';
 import { AuthService } from '../services';
 import { Public } from '../decorators/auth.decorator';
@@ -23,15 +23,18 @@ export class AuthController {
     return new NormalResponseDto(await this.authService.changePassword(data, req.user));
   }
 
-  @Public()
-  @Post('register')
-  async register(@Body() data: any) {
-    return new NormalResponseDto(await this.authService.register(data));
-  }
-
-  // Uncomment if you want to implement a logout endpoint
   @Post('logout')
   async logout(@Req() req: any) {
-    return new NormalResponseDto(await this.authService.logout(req.user));
+    // Lấy token từ Authorization header
+    const token = this.extractTokenFromHeader(req);
+    if (!token) {
+      throw new BadRequestException('Authorization token is required');
+    }
+    return new NormalResponseDto(await this.authService.logout(req.user, token));
+  }
+
+  private extractTokenFromHeader(request: any): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }

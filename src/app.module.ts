@@ -4,12 +4,14 @@ import { BullModule } from '@nestjs/bull';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
+import { SharedModule } from './shared/shared.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    SharedModule, // 🔒 Global module với TokenBlacklistService
     BullModule.forRootAsync({
       useFactory: () => ({
         redis: {
@@ -18,9 +20,9 @@ import { JwtAuthGuard } from './modules/auth/guards';
         },
       }),
     }),
-    UserModule,
     AuthModule,
-    TransactionModule, // 🔒 Thêm Transaction module với bảo mật
+    UserModule,
+    TransactionModule,
   ],
   providers: [
     {
