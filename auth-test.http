@@ -1,0 +1,75 @@
+### Variables
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### Register a new user
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "phone": "1234567890",
+  "password": "password123"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "phone": "1234567890",
+  "password": "password123"
+}
+
+### Extract token from login response
+@accessToken = {{login.response.body.data.accessToken}}
+
+### Get user profile (requires authentication)
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{accessToken}}
+
+### Change password (requires authentication)
+PUT {{baseUrl}}/auth/change-password
+Content-Type: {{contentType}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "oldPassword": "password123",
+  "newPassword": "newpassword456",
+  "confirmPassword": "newpassword456"
+}
+
+### Logout (requires authentication)
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### Test invalid login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "phone": "1234567890",
+  "password": "wrongpassword"
+}
+
+### Test non-existent user login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "phone": "9999999999",
+  "password": "password123"
+}
+
+### Test duplicate registration
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Another User",
+  "email": "another@example.com",
+  "phone": "1234567890",
+  "password": "password123"
+}

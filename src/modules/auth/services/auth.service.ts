@@ -12,12 +12,10 @@ export class AuthService {
   ) {}
 
   async validateUser(data: UserSignInRequestDto): Promise<any> {
-    console.log('--------------', data);
     const user = await this.userRepository.getUserForSignIn(data.phone);
     if (!user) {
       return null;
     }
-    console.log('--------------', user);
     if (!Generation.comparePassword(data.password, user.password)) {
       return null;
     }
@@ -64,5 +62,34 @@ export class AuthService {
     }
 
     return true;
+  }
+
+  async register(data: any): Promise<any> {
+    try {
+      const existsUser = await this.userRepository.checkExistsUser(null, { phone: data.phone });
+      if (existsUser) {
+        throw new BadRequestException('User Phone is exists');
+      }
+      data.password = Generation.encodePassword(data.password);
+      await this.userRepository.createUser(null, data);
+      return true;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async logout(user: any): Promise<any> {
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    // For JWT-based authentication, logout is typically handled client-side
+    // by removing the token from storage (localStorage, sessionStorage, etc.)
+    // Server-side logout is not strictly necessary for stateless JWTs
+
+    return {
+      message: 'User logged out successfully',
+      timestamp: new Date().toISOString(),
+    };
   }
 }

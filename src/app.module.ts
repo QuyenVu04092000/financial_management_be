@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards';
 
@@ -19,6 +20,7 @@ import { JwtAuthGuard } from './modules/auth/guards';
     }),
     UserModule,
     AuthModule,
+    TransactionModule, // 🔒 Thêm Transaction module với bảo mật
   ],
   providers: [
     {

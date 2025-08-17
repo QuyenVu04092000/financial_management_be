@@ -21,7 +21,6 @@ model User {
   subBudgetCategory SubBudgetCategory[]
   subCategory       SubCategory[]
   transaction       Transaction[]
-  account           Account[]
   @@map("users")
 }
 
@@ -57,30 +56,6 @@ model SubCategory {
   @@index([category_id], map: "sub_categories_category_id_fkey")
   @@index([user_id], map: "sub_categories_user_id_fkey")
   @@map("sub_categories")
-}
-
-model SampleCategory {
-  id                String              @id @default(uuid())
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
-  status            String              @default("ACTIVE")
-  name              String
-  sampleSubCategory SampleSubCategory[]
-
-  @@map("sample_categories")
-}
-
-model SampleSubCategory {
-  id          String         @id @default(uuid())
-  createdAt   DateTime       @default(now()) @map("created_at")
-  updatedAt   DateTime       @updatedAt @map("updated_at")
-  status      String         @default("ACTIVE")
-  name        String
-  category_id String         @map("category_id")
-  category    SampleCategory @relation(fields: [category_id], references: [id])
-
-  @@index([category_id], map: "sample_sub_categories_category_id_fkey")
-  @@map("sample_sub_categories")
 }
 
 model BudgetCategory {
@@ -138,15 +113,26 @@ model Transaction {
   @@map("transactions")
 }
 
-model Account {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  status      String   @default("ACTIVE")
-  name        String
-  user_id     String   @map("user_id")
-  user        User     @relation(fields: [user_id], references: [id])
-  
-  @@index([user_id], map: "accounts_user_id_fkey")
-  @@map("accounts")
-}
+// model Account {
+//   id          String        @id @default(uuid())
+//   createdAt   DateTime      @default(now()) @map("created_at")
+//   updatedAt   DateTime      @updatedAt @map("updated_at")
+//   status      String        @default("ACTIVE")
+//   name        String
+//   type        AccountType   @default(CASH)
+//   balance     Float         @default(0)
+
+//   user_id     String        @map("user_id")
+//   user        User          @relation(fields: [user_id], references: [id])
+//   transactions Transaction[]
+
+//   @@index([user_id], map: "accounts_user_id_fkey")
+//   @@map("accounts")
+// }
+
+// enum AccountType {
+//   CASH
+//   BANK
+//   CREDIT
+//   EWALLET
+// }

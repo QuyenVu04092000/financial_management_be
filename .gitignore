@@ -46,13 +46,15 @@ yarn.lock
 # Media
 /media/report-results
 
-# folder volumes
+# Docker Volumes - Do not commit database data
+volumes/
+volumes_redis/
+volumes_redis_local/
+
+# Legacy entries (keeping for compatibility)
 /volumes
-
-# folder volumes_redis
+/volumes/mysql
 /volumes_redis
-
-#folder volumes_redis_local
 /volumes_redis_local
 volumes/ib_logfile0
 volumes/ibdata1

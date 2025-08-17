@@ -7,34 +7,47 @@ import { Transaction } from '@prisma/client';
 export class TransactionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getTransactionDetailById(id: string): Promise<Transaction> {
-    const transaction = await this.prisma.transaction.findUnique({
-      where: { id },
+  async getTransactionDetailById(id: string, userId: string): Promise<Transaction> {
+    const transaction = await this.prisma.transaction.findFirst({
+      where: {
+        id,
+        user_id: userId, // 🔒 Chỉ lấy transaction của user hiện tại
+      },
       include: {
         category: true,
         subCategory: true,
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            // Không trả về password
+          },
+        },
       },
     });
 
     if (!transaction) {
-      throw new NotFoundException(`Transaction with id: ${id} is not found.`);
+      throw new NotFoundException(`Transaction with id: ${id} is not found or you don't have permission to access it.`);
     }
 
     return transaction;
   }
 
-  async getTransactionById(prisma: any, id: string): Promise<Transaction> {
+  async getTransactionById(prisma: any, id: string, userId: string): Promise<Transaction> {
     if (!prisma) {
       prisma = this.prisma;
     }
 
-    const transaction = await prisma.transaction.findUnique({
-      where: { id },
+    const transaction = await prisma.transaction.findFirst({
+      where: {
+        id,
+        user_id: userId, // 🔒 Chỉ lấy transaction của user hiện tại
+      },
     });
 
     if (!transaction) {
-      throw new NotFoundException(`Transaction with id: ${id} is not found.`);
+      throw new NotFoundException(`Transaction with id: ${id} is not found or you don't have permission to access it.`);
     }
 
     return transaction;
@@ -76,7 +89,10 @@ export class TransactionRepository {
     });
   }
 
-  async updateTransaction(id: string, data: any): Promise<Transaction> {
+  async updateTransaction(id: string, userId: string, data: any): Promise<Transaction> {
+    // 🔒 Kiểm tra transaction thuộc về user trước khi update
+    await this.getTransactionById(null, id, userId);
+
     return this.prisma.transaction.update({
       where: { id },
       data: {
@@ -89,6 +105,18 @@ export class TransactionRepository {
       include: {
         category: true,
         subCategory: true,
+      },
+    });
+  }
+
+  async deleteTransaction(id: string, userId: string): Promise<Transaction> {
+    // 🔒 Kiểm tra transaction thuộc về user trước khi delete
+    await this.getTransactionById(null, id, userId);
+
+    return this.prisma.transaction.update({
+      where: { id },
+      data: {
+        status: 'DELETED',
       },
     });
   }

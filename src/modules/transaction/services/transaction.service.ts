@@ -14,8 +14,8 @@ export class TransactionService {
     private readonly prismaUnitOfWorkService: PrismaUnitOfWorkService,
   ) {}
 
-  async getTransactionDetailById(id: string): Promise<TransactionDetailGetResponseDto> {
-    const transaction = await this.transactionRepository.getTransactionDetailById(id);
+  async getTransactionDetailById(id: string, userId: string): Promise<TransactionDetailGetResponseDto> {
+    const transaction = await this.transactionRepository.getTransactionDetailById(id, userId);
     const result = new TransactionDetailGetResponseDto(transaction);
     return result;
   }
@@ -44,12 +44,21 @@ export class TransactionService {
     }
   }
 
-  async updateTransaction(id: string, data: any): Promise<TransactionDetailGetResponseDto> {
+  async updateTransaction(id: string, userId: string, data: any): Promise<TransactionDetailGetResponseDto> {
     try {
-      const updatedTransaction = await this.transactionRepository.updateTransaction(id, data);
+      const updatedTransaction = await this.transactionRepository.updateTransaction(id, userId, data);
       return new TransactionDetailGetResponseDto(updatedTransaction);
     } catch (error) {
       throw new BadRequestException(error.message || 'Failed to update transaction');
+    }
+  }
+
+  async deleteTransaction(id: string, userId: string): Promise<TransactionDetailGetResponseDto> {
+    try {
+      const deletedTransaction = await this.transactionRepository.deleteTransaction(id, userId);
+      return new TransactionDetailGetResponseDto(deletedTransaction);
+    } catch (error) {
+      throw new BadRequestException(error.message || 'Failed to delete transaction');
     }
   }
 }
