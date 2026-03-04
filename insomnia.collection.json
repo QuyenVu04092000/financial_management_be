@@ -1,0 +1,1033 @@
+{
+    "_type": "export",
+    "__export_format": 4,
+    "__export_date": "2025-01-19T00:00:00.000Z",
+    "__export_source": "insomnia.desktop.app:v2023.5.8",
+    "resources": [
+        {
+            "_id": "wrk_financial_management",
+            "_type": "workspace",
+            "name": "Financial Management API",
+            "description": "Money Management Application Backend APIs",
+            "scope": "collection"
+        },
+        {
+            "_id": "env_base_url",
+            "_type": "environment",
+            "parentId": "wrk_financial_management",
+            "name": "Base Environment",
+            "data": {
+                "base_url": "http://localhost:4000",
+                "jwt": "PUT_TOKEN_HERE"
+            },
+            "color": null,
+            "isPrivate": false,
+            "metaSortKey": 1000000000000
+        },
+        {
+            "_id": "fld_auth",
+            "_type": "request_group",
+            "parentId": "wrk_financial_management",
+            "name": "Auth",
+            "description": "Authentication endpoints",
+            "environment": {},
+            "environmentPropertyOrder": null,
+            "metaSortKey": 1000000000000
+        },
+        {
+            "_id": "req_auth_register",
+            "_type": "request",
+            "parentId": "fld_auth",
+            "name": "Register",
+            "description": "Register a new user. Creates user account and returns accessToken immediately.",
+            "url": "{{ base_url }}/api/auth/register",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"phone\": \"+1234567890\",\n  \"name\": \"John Doe\",\n  \"password\": \"password123\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {},
+            "metaSortKey": 1000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_auth_login",
+            "_type": "request",
+            "parentId": "fld_auth",
+            "name": "Login",
+            "description": "Login with phone and password",
+            "url": "{{ base_url }}/api/auth/login",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"phone\": \"+1234567890\",\n  \"password\": \"password123\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {},
+            "metaSortKey": 2000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_auth_profile",
+            "_type": "request",
+            "parentId": "fld_auth",
+            "name": "Get Profile",
+            "description": "Get current user profile",
+            "url": "{{ base_url }}/api/auth/profile",
+            "method": "GET",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 3000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_auth_change_password",
+            "_type": "request",
+            "parentId": "fld_auth",
+            "name": "Change Password",
+            "description": "Change user password",
+            "url": "{{ base_url }}/api/auth/change-password",
+            "method": "PUT",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"oldPassword\": \"oldpassword123\",\n  \"newPassword\": \"newpassword123\",\n  \"confirmPassword\": \"newpassword123\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 4000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "fld_users",
+            "_type": "request_group",
+            "parentId": "wrk_financial_management",
+            "name": "Users",
+            "description": "User management endpoints",
+            "environment": {},
+            "environmentPropertyOrder": null,
+            "metaSortKey": 2000000000000
+        },
+        {
+            "_id": "req_users_check_exists",
+            "_type": "request",
+            "parentId": "fld_users",
+            "name": "Check User Exists",
+            "description": "Check if user exists by phone",
+            "url": "{{ base_url }}/api/users/check-exists",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "phone",
+                    "value": "+1234567890",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [],
+            "authentication": {},
+            "metaSortKey": 1000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_users_get_by_id",
+            "_type": "request",
+            "parentId": "fld_users",
+            "name": "Get User By ID",
+            "description": "Get user details by ID",
+            "url": "{{ base_url }}/api/users/:id",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "user-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [],
+            "authentication": {},
+            "metaSortKey": 2000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_users_update_statuses",
+            "_type": "request",
+            "parentId": "fld_users",
+            "name": "Update User Statuses",
+            "description": "Update status for multiple users",
+            "url": "{{ base_url }}/api/users/statuses",
+            "method": "PUT",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"userIds\": [\"user-id-1\", \"user-id-2\"],\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 3000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_users_update",
+            "_type": "request",
+            "parentId": "fld_users",
+            "name": "Update User",
+            "description": "Update user information",
+            "url": "{{ base_url }}/api/users/:id",
+            "method": "PUT",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"name\": \"John Doe Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"status\": \"ACTIVE\",\n  \"balance\": 1500000,\n  \"startDayMonth\": 10\n}"
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "user-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 4000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "fld_categories",
+            "_type": "request_group",
+            "parentId": "wrk_financial_management",
+            "name": "Categories",
+            "description": "Category management endpoints",
+            "environment": {},
+            "environmentPropertyOrder": null,
+            "metaSortKey": 3000000000000
+        },
+        {
+            "_id": "req_categories_get",
+            "_type": "request",
+            "parentId": "fld_categories",
+            "name": "Get Categories",
+            "description": "Get all categories (includes user categories and default categories with sub-categories)",
+            "url": "{{ base_url }}/api/categories",
+            "method": "GET",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 1000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_categories_get_default",
+            "_type": "request",
+            "parentId": "fld_categories",
+            "name": "Get Default Categories",
+            "description": "Get default categories",
+            "url": "{{ base_url }}/api/categories/default",
+            "method": "GET",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {},
+            "metaSortKey": 2000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_categories_create",
+            "_type": "request",
+            "parentId": "fld_categories",
+            "name": "Create Category",
+            "description": "Create a new category",
+            "url": "{{ base_url }}/api/categories",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"name\": \"Food\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 3000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_categories_update",
+            "_type": "request",
+            "parentId": "fld_categories",
+            "name": "Update Category",
+            "description": "Update category information",
+            "url": "{{ base_url }}/api/categories/:id",
+            "method": "PUT",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"name\": \"Food & Dining\"\n}"
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "category-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 4000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_categories_delete",
+            "_type": "request",
+            "parentId": "fld_categories",
+            "name": "Delete Category",
+            "description": "Delete a category",
+            "url": "{{ base_url }}/api/categories/:id",
+            "method": "DELETE",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "category-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 5000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_categories_get_sub_categories",
+            "_type": "request",
+            "parentId": "fld_categories",
+            "name": "Get Sub-Categories by Category",
+            "description": "Get all sub-categories for a specific category",
+            "url": "{{ base_url }}/api/categories/:id/sub-categories",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "category-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 6000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "fld_sub_categories",
+            "_type": "request_group",
+            "parentId": "wrk_financial_management",
+            "name": "Sub-Categories",
+            "description": "Sub-category management endpoints",
+            "environment": {},
+            "environmentPropertyOrder": null,
+            "metaSortKey": 4000000000000
+        },
+        {
+            "_id": "req_sub_categories_get",
+            "_type": "request",
+            "parentId": "fld_sub_categories",
+            "name": "Get Sub-Categories",
+            "description": "Get all sub-categories (optionally filter by categoryId query param)",
+            "url": "{{ base_url }}/api/sub-categories",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "categoryId",
+                    "value": "category-id-here",
+                    "description": "Optional: Filter by category ID",
+                    "disabled": true
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 1000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_sub_categories_create",
+            "_type": "request",
+            "parentId": "fld_sub_categories",
+            "name": "Create Sub-Category",
+            "description": "Create a new sub-category",
+            "url": "{{ base_url }}/api/sub-categories",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"name\": \"Dinner\",\n  \"categoryId\": \"category-id-here\",\n  \"icon\": \"🍽️\",\n  \"isDefault\": false\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 2000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_sub_categories_update",
+            "_type": "request",
+            "parentId": "fld_sub_categories",
+            "name": "Update Sub-Category",
+            "description": "Update sub-category information",
+            "url": "{{ base_url }}/api/sub-categories/:id",
+            "method": "PUT",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"name\": \"Dinner Updated\",\n  \"categoryId\": \"category-id-here\",\n  \"icon\": \"🍕\",\n  \"isDefault\": false\n}"
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "sub-category-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 3000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_sub_categories_delete",
+            "_type": "request",
+            "parentId": "fld_sub_categories",
+            "name": "Delete Sub-Category",
+            "description": "Delete a sub-category",
+            "url": "{{ base_url }}/api/sub-categories/:id",
+            "method": "DELETE",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "sub-category-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 4000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "fld_transactions",
+            "_type": "request_group",
+            "parentId": "wrk_financial_management",
+            "name": "Transactions",
+            "description": "Transaction management endpoints",
+            "environment": {},
+            "environmentPropertyOrder": null,
+            "metaSortKey": 5000000000000
+        },
+        {
+            "_id": "req_transactions_get",
+            "_type": "request",
+            "parentId": "fld_transactions",
+            "name": "Get Transactions",
+            "description": "Get all transactions (optionally filter by month)",
+            "url": "{{ base_url }}/api/transactions",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "month",
+                    "value": "2025-01",
+                    "description": "Optional: Filter by month (YYYY-MM format)",
+                    "disabled": true
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 1000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_transactions_get_by_category",
+            "_type": "request",
+            "parentId": "fld_transactions",
+            "name": "Get Transactions by Category",
+            "description": "Get transactions filtered by category or sub-category. Must provide at least one of: categoryId or subCategoryId. Must provide exactly one of: month (MM/YYYY format) or week (DD/MM/YYYY-DD/MM/YYYY format). Example: categoryId=cat-123&month=01/2025 or subCategoryId=sub-456&week=10/12/2025-17/12/2025",
+            "url": "{{ base_url }}/api/transactions/category",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "categoryId",
+                    "value": "category-id-here",
+                    "description": "Optional: Category ID to filter by (at least one of categoryId or subCategoryId is required)",
+                    "disabled": true
+                },
+                {
+                    "name": "subCategoryId",
+                    "value": "sub-category-id-here",
+                    "description": "Optional: Sub-category ID to filter by (at least one of categoryId or subCategoryId is required)",
+                    "disabled": true
+                },
+                {
+                    "name": "month",
+                    "value": "01/2025",
+                    "description": "Optional: Filter by month (MM/YYYY format, e.g., 01/2025). Cannot be used with week parameter.",
+                    "disabled": true
+                },
+                {
+                    "name": "week",
+                    "value": "10/12/2025-17/12/2025",
+                    "description": "Optional: Filter by week (DD/MM/YYYY-DD/MM/YYYY format, e.g., 10/12/2025-17/12/2025). Cannot be used with month parameter.",
+                    "disabled": true
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 1500000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_transactions_create",
+            "_type": "request",
+            "parentId": "fld_transactions",
+            "name": "Create Transaction",
+            "description": "Create a new transaction (automatically updates user balance). Optional createdAt field allows setting custom date.",
+            "url": "{{ base_url }}/api/transactions",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"type\": \"out\",\n  \"amount\": 100.50,\n  \"categoryId\": \"category-id-here\",\n  \"subCategoryId\": \"sub-category-id-here\",\n  \"status\": \"ACTIVE\",\n  \"createdAt\": \"2025-01-19T10:00:00.000Z\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 2000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_transactions_update",
+            "_type": "request",
+            "parentId": "fld_transactions",
+            "name": "Update Transaction",
+            "description": "Update transaction information",
+            "url": "{{ base_url }}/api/transactions/:id",
+            "method": "PUT",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"type\": \"in\",\n  \"amount\": 200.00,\n  \"categoryId\": \"category-id-here\",\n  \"subCategoryId\": \"sub-category-id-here\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "transaction-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 3000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_transactions_delete",
+            "_type": "request",
+            "parentId": "fld_transactions",
+            "name": "Delete Transaction",
+            "description": "Delete a transaction",
+            "url": "{{ base_url }}/api/transactions/:id",
+            "method": "DELETE",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "id",
+                    "value": "transaction-id-here",
+                    "description": "",
+                    "disabled": false
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 4000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_transactions_get_today_spent",
+            "_type": "request",
+            "parentId": "fld_transactions",
+            "name": "Get Today Spent",
+            "description": "Get total money spent (out transactions) for today in UTC+7 timezone",
+            "url": "{{ base_url }}/api/transactions/today/spent",
+            "method": "GET",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 5000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_transactions_report",
+            "_type": "request",
+            "parentId": "fld_transactions",
+            "name": "Get Report",
+            "description": "Get income and expense report by category and sub-category. Supports week, month (uses user's startDayMonth), or custom date range. Use type='in' for income report or type='out' for expense/spent report. Includes previous period comparison for week and month periods.",
+            "url": "{{ base_url }}/api/transactions/report",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "period",
+                    "value": "month",
+                    "description": "Optional: week, month, or custom (default: month)",
+                    "disabled": true
+                },
+                {
+                    "name": "startDate",
+                    "value": "2025-01-01",
+                    "description": "Required if period=custom. Format: YYYY-MM-DD or ISO",
+                    "disabled": true
+                },
+                {
+                    "name": "endDate",
+                    "value": "2025-01-31",
+                    "description": "Required if period=custom. Format: YYYY-MM-DD or ISO",
+                    "disabled": true
+                },
+                {
+                    "name": "type",
+                    "value": "out",
+                    "description": "Optional: 'in' for income report, 'out' for expense/spent report",
+                    "disabled": true
+                },
+                {
+                    "name": "categoryId",
+                    "value": "category-id-here",
+                    "description": "Optional: Filter by specific category",
+                    "disabled": true
+                },
+                {
+                    "name": "subCategoryId",
+                    "value": "sub-category-id-here",
+                    "description": "Optional: Filter by specific sub-category",
+                    "disabled": true
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 6000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "fld_budgets",
+            "_type": "request_group",
+            "parentId": "wrk_financial_management",
+            "name": "Budgets",
+            "description": "Budget management endpoints",
+            "environment": {},
+            "environmentPropertyOrder": null,
+            "metaSortKey": 7000000000000
+        },
+        {
+            "_id": "req_budgets_get_category",
+            "_type": "request",
+            "parentId": "fld_budgets",
+            "name": "Get Category Budgets",
+            "description": "Get all category budgets (optionally filter by month)",
+            "url": "{{ base_url }}/api/budgets/categories",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "month",
+                    "value": "2025-01",
+                    "description": "Optional: Filter by month (YYYY-MM format)",
+                    "disabled": true
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 1000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_budgets_create_category",
+            "_type": "request",
+            "parentId": "fld_budgets",
+            "name": "Create Category Budget",
+            "description": "Create a new category budget",
+            "url": "{{ base_url }}/api/budgets/categories",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"categoryId\": \"category-id-here\",\n  \"budget\": 1000.00,\n  \"month\": \"2025-01\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 2000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_budgets_get_sub_category",
+            "_type": "request",
+            "parentId": "fld_budgets",
+            "name": "Get Sub-Category Budgets",
+            "description": "Get all sub-category budgets (optionally filter by month)",
+            "url": "{{ base_url }}/api/budgets/sub-categories",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "name": "month",
+                    "value": "2025-01",
+                    "description": "Optional: Filter by month (YYYY-MM format)",
+                    "disabled": true
+                }
+            ],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 3000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        },
+        {
+            "_id": "req_budgets_create_sub_category",
+            "_type": "request",
+            "parentId": "fld_budgets",
+            "name": "Create Sub-Category Budget",
+            "description": "Create a new sub-category budget",
+            "url": "{{ base_url }}/api/budgets/sub-categories",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"subCategoryId\": \"sub-category-id-here\",\n  \"budget\": 500.00,\n  \"month\": \"2025-01\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {
+                "type": "bearer",
+                "token": "{{ jwt }}"
+            },
+            "metaSortKey": 4000000000000,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global"
+        }
+    ]
+}

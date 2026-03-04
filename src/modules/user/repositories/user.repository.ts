@@ -58,7 +58,9 @@ export class UserRepository {
         name: data.name,
         phone: data.phone,
         password: data.password,
-        email: data.email || '',
+        // If email is not provided, generate a unique placeholder based on phone
+        // to satisfy the unique constraint on the `email` column.
+        email: data.email || ``,
       },
     });
   }
@@ -80,5 +82,43 @@ export class UserRepository {
       },
     });
     return user;
+  }
+
+  async getUserByPhone(phone: string): Promise<any> {
+    if (!phone) {
+      return null;
+    }
+    const user = await this.prisma.user.findFirst({
+      where: {
+        phone,
+      },
+    });
+    return user;
+  }
+
+  async checkExistsUserByPhone(prisma: any, phone: string): Promise<User | null> {
+    if (!prisma) {
+      prisma = this.prisma;
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        phone,
+      },
+    });
+
+    return user;
+  }
+
+  async createUserByPhone(prisma: any, data: { phone: string; password: string }): Promise<any> {
+    if (!prisma) {
+      prisma = this.prisma;
+    }
+    return await prisma.user.create({
+      data: {
+        phone: data.phone,
+        password: data.password,
+      },
+    });
   }
 }

@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -19,12 +19,14 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "postinstall": "husky install",
-    "prisma:generate:dmsv1": "npx prisma generate --schema=./src/prisma-dms-v1/schema.prisma"
+    "prisma:generate:dmsv1": "npx prisma generate --schema=./src/prisma-dms-v1/schema.prisma",
+    "seed:categories": "ts-node -r tsconfig-paths/register src/prisma/seedDefaultCategories.ts"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"
   },
   "dependencies": {
+    "@google/genai": "^1.43.0",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/bull": "^10.1.1",
     "@nestjs/common": "^10.0.0",
@@ -33,7 +35,8 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
-    "@prisma/client": "^5.12.1",
+    "@nestjs/throttler": "^6.5.0",
+    "@prisma/client": "^5.19.1",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "bull": "^4.12.3",
@@ -72,7 +75,7 @@
     "jest": "^29.5.0",
     "lint-staged": "^15.2.2",
     "prettier": "^3.0.0",
-    "prisma": "^5.21.1",
+    "prisma": "^5.19.1",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",

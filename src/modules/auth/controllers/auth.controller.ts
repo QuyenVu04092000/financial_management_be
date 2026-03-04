@@ -1,5 +1,10 @@
 import { Controller, Get, Post, Req, Put, Body } from '@nestjs/common';
-import { NormalResponseDto, UserChangePasswordRequestDto } from '../../../common/dto';
+import {
+  NormalResponseDto,
+  UserChangePasswordRequestDto,
+  UserRegisterRequestDto,
+  UserLoginRequestDto,
+} from '../../../common/dto';
 import { AuthService } from '../services';
 import { Public } from '../decorators/auth.decorator';
 
@@ -8,9 +13,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @Post('register')
+  async register(@Body() data: UserRegisterRequestDto) {
+    return new NormalResponseDto(await this.authService.register(data));
+  }
+
+  @Public()
   @Post('login')
-  async signIn(@Req() req: any) {
-    return new NormalResponseDto(await this.authService.validateUser(req.body));
+  async login(@Body() data: UserLoginRequestDto) {
+    return new NormalResponseDto(await this.authService.login(data));
   }
 
   @Get('profile')

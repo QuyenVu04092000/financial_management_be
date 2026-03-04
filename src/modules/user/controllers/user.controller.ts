@@ -23,11 +23,6 @@ export class UserController {
   async getUserDetailById(@Param('id') id: string): Promise<any> {
     return new NormalResponseDto(await this.userService.getUserDetailById(id));
   }
-  @Public()
-  @Post('')
-  async createUser(@Body() data: UserCreateRequestDto): Promise<any> {
-    return new NormalResponseDto(await this.userService.createUser(data));
-  }
 
   @Put('statuses')
   async updateUserStatuses(@Body() data: UserUpdateStatusRequestDto): Promise<any> {

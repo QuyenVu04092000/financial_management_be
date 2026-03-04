@@ -9,5 +9,6 @@ import { PrismaUnitOfWorkService } from '../../prisma/prisma-uow.services';
   imports: [PrismaModule],
   controllers: [UserController],
   providers: [PrismaUnitOfWorkService, UserService, UserRepository],
+  exports: [UserRepository],
 })
 export class UserModule {}

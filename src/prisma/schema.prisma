@@ -14,8 +14,130 @@ model User {
   status    String   @default("ACTIVE")
   name      String
   phone     String
-  email     String
-  password  String
+  email     String   @unique
+  password  String   @map("pass")
+  balance   Decimal  @default(0) @db.Decimal(10, 2)
+  // Day of month that marks the start of the user's personal month (e.g. salary day: 1–31)
+  startDayMonth Int  @default(1) @map("start_day_month")
+
+  // Relations
+  categories         Category[]
+  subCategories      SubCategory[]
+  sampleCategories   SampleCategory[]
+  transactions       Transaction[]
+  categoryBudgets    BudCategory[]
+  subCategoryBudgets SubBudCategory[]
+  userSettings       UserSetting?
 
   @@map("users")
 }
+
+model UserSetting {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_setting")
+}
+
+model Category {
+  id          String  @id @default(uuid())
+  name        String
+  userId      String  @map("user_id")
+  purpose     String? // Optional: purpose of the category
+  formulaHint String? @map("formula_hint") // Optional: formula hint for calculations
+  note        String? // Optional: additional notes
+  isDefault   Boolean @default(false) @map("is_default") // Flag to mark default categories
+  icon        String?
+  
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subCategories      SubCategory[]
+  budgets            BudCategory[]
+  subCategoryBudgets SubBudCategory[]
+
+  @@map("category")
+}
+
+model SubCategory {
+  id         String  @id @default(uuid())
+  name       String
+  categoryId String  @map("category_id")
+  userId     String  @map("user_id")
+  icon       String? // Optional: icon (e.g. emoji or icon name/key)
+  isDefault  Boolean @default(false) @map("is_default") // Flag to mark default sub-categories
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  budgets     SubBudCategory[]
+  transactions Transaction[]
+
+  @@map("sub_category")
+}
+
+model SampleCategory {
+  id     String @id @default(uuid())
+  status String
+  userId String @map("user_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sample_category")
+}
+
+model SampleSubCategory {
+  id         String @id @default(uuid())
+  name       String
+  categoryId String @map("category_id")
+
+  @@map("sample_sub_category")
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  status        String
+  type          String   // ENUM: in | out
+  amount        Decimal  @db.Decimal(10, 2)
+  categoryId    String?  @map("categoryId")
+  subCategoryId String?  @map("sub_categoryId")
+  userId        String   @map("user_id")
+  note          String?  // Optional: note for the transaction
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subCategory SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull)
+
+  @@map("transactions")
+}
+
+model BudCategory {
+  id         String @id @default(uuid())
+  categoryId String @map("category_id")
+  budget     Decimal @db.Decimal(10, 2)
+  month      String // Format: YYYY-MM
+  userId     String @map("user_id")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId, month])
+  @@map("bud_category")
+}
+
+model SubBudCategory {
+  id            String  @id @default(uuid())
+  categoryId    String  @map("category_id") // Parent category of the sub-category
+  subCategoryId String  @map("sub_category_id")
+  budget        Decimal @db.Decimal(10, 2)
+  month         String // Format: YYYY-MM
+  userId        String  @map("user_id")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subCategory SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, subCategoryId, month])
+  @@map("sub_bud_category")
+}
+

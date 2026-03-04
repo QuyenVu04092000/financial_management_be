@@ -45,3 +45,8 @@ yarn.lock
 
 # Media
 /media/report-results
+
+# Volumes
+volumes/*
+volumes_redis/*
+volumes_redis_local/*

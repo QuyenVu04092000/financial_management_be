@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, ArrayNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional, ArrayNotEmpty, IsNumber, Min, Max } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Converter } from '../../utilities/converter';
 
@@ -79,6 +79,18 @@ export class UserUpdateRequestDto {
 
   @IsOptional()
   password?: string;
+
+  // Optional: allow admin/client to adjust current balance manually
+  @IsOptional()
+  @IsNumber()
+  balance?: number;
+
+  // Optional: user-defined start day of personal month (1–31)
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(31)
+  startDayMonth?: number;
 }
 
 export class CheckExistsUserRequestDto {
@@ -87,6 +99,28 @@ export class CheckExistsUserRequestDto {
 }
 
 export class UserSignInRequestDto {
+  @IsNotEmpty()
+  phone: string;
+
+  @IsNotEmpty()
+  password: string;
+}
+
+export class UserRegisterRequestDto {
+  @IsNotEmpty()
+  phone: string;
+
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  email: string;
+
+  @IsNotEmpty()
+  password: string;
+}
+
+export class UserLoginRequestDto {
   @IsNotEmpty()
   phone: string;
 

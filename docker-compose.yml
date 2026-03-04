@@ -3,18 +3,17 @@ version: '3.9'
 services:
   mysql-master:
     image: mysql:5.7.16
+    platform: linux/amd64
     container_name: pfmp-mysql-master
     volumes:
       - ./volumes:/var/lib/mysql
     ports:
-      - '${MYSQL_PORT}:3306'
+      - '3306:3306'
     restart: unless-stopped
     env_file:
       - .env
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_PASSWORD}']
@@ -42,6 +41,7 @@ services:
 
   redis-commander:
     image: rediscommander/redis-commander:latest
+    platform: linux/amd64
     container_name: pfmp-redis-commander
     environment:
       - REDIS_HOSTS=local:pfmp-redis:${REDIS_PORT}
