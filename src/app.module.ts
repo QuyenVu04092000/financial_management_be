@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { BullModule } from '@nestjs/bull';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -22,14 +21,6 @@ import { JwtAuthGuard } from './modules/auth/guards';
         limit: 100,   // global default: 100 req/min per tracker
       },
     ]),
-    BullModule.forRootAsync({
-      useFactory: () => ({
-        redis: {
-          host: 'localhost',
-          port: 6379,
-        },
-      }),
-    }),
     UserModule,
     AuthModule,
     CategoryModule,
