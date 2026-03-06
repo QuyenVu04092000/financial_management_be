@@ -8,6 +8,7 @@ import { SubCategoryModule } from './modules/sub-category/sub-category.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { HealthModule } from './modules/health/health.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards';
 
@@ -28,6 +29,7 @@ import { JwtAuthGuard } from './modules/auth/guards';
     TransactionModule,
     BudgetModule,
     ChatModule,
+    HealthModule,
   ],
   providers: [
     {

@@ -10,7 +10,9 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.enableCors();
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: ['health'],
+  });
 
   const configService = app.get(ConfigService);
   const defaultVersion = configService.get('DEFAULT_VERSION');
