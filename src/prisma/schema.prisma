@@ -16,7 +16,7 @@ model User {
   phone     String
   email     String   @unique
   password  String   @map("pass")
-  balance   Decimal  @default(0) @db.Decimal(10, 2)
+  balance   Decimal  @default(0) @db.Decimal(18, 2)
   // Day of month that marks the start of the user's personal month (e.g. salary day: 1–31)
   startDayMonth Int  @default(1) @map("start_day_month")
 
@@ -99,7 +99,7 @@ model Transaction {
   updatedAt     DateTime @updatedAt @map("updated_at")
   status        String
   type          String   // ENUM: in | out
-  amount        Decimal  @db.Decimal(10, 2)
+  amount        Decimal  @db.Decimal(18, 2)
   categoryId    String?  @map("categoryId")
   subCategoryId String?  @map("sub_categoryId")
   userId        String   @map("user_id")
@@ -114,7 +114,7 @@ model Transaction {
 model BudCategory {
   id         String @id @default(uuid())
   categoryId String @map("category_id")
-  budget     Decimal @db.Decimal(10, 2)
+  budget     Decimal @db.Decimal(18, 2)
   month      String // Format: YYYY-MM
   userId     String @map("user_id")
 
@@ -129,7 +129,7 @@ model SubBudCategory {
   id            String  @id @default(uuid())
   categoryId    String  @map("category_id") // Parent category of the sub-category
   subCategoryId String  @map("sub_category_id")
-  budget        Decimal @db.Decimal(10, 2)
+  budget        Decimal @db.Decimal(18, 2)
   month         String // Format: YYYY-MM
   userId        String  @map("user_id")
 
