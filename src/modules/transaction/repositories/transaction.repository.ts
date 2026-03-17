@@ -119,7 +119,8 @@ export class TransactionRepository {
         subCategoryId: data.subCategoryId,
         userId: data.userId,
         status: data.status || 'ACTIVE',
-        createdAt: data.createdAt, // <-- new, optional override
+        createdAt: data.createdAt, // optional override (for AI / backdated entries)
+        note: data.note,
       },
     });
   }

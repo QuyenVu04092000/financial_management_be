@@ -444,7 +444,11 @@ export class TransactionService {
     try {
       // Validate subCategoryId if provided
       if (data.subCategoryId) {
-        await this.subCategoryRepository.getSubCategoryById(data.subCategoryId, userId);
+        const subCategory = await this.subCategoryRepository.getSubCategoryById(data.subCategoryId, userId);
+        // If categoryId is not explicitly provided, derive it from the sub-category
+        if (!data.categoryId) {
+          (data as any).categoryId = subCategory.categoryId;
+        }
       }
 
       return await this.prismaUnitOfWorkService.executeInTransaction(async (prisma) => {
