@@ -17,6 +17,12 @@ export class CategoryRepository {
       },
       include: {
         subCategories: {
+          where: {
+            OR: [
+              { userId }, // User's own sub-categories
+              { isDefault: true }, // Default sub-categories
+            ],
+          },
           orderBy: {
             name: 'asc',
           },
