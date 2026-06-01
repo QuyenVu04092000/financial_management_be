@@ -33,9 +33,13 @@ export class TransactionCreateRequestDto {
   @IsString()
   note?: string;
 
-  // New: optional createdAt (day/date) field, expect ISO or YYYY-MM-DD
+  // New: optional createdAt (day/date) field, expect ISO 8601 with timezone (e.g. "2026-06-01T00:00:00+07:00")
   @IsOptional()
-  @Transform(({ value }) => (value ? new Date(value) : undefined), { toClassOnly: true })
+  @Transform(({ value }) => {
+    if (!value) return undefined;
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? undefined : d;
+  }, { toClassOnly: true })
   createdAt?: Date;
 }
 

@@ -119,7 +119,7 @@ export class TransactionRepository {
         subCategoryId: data.subCategoryId,
         userId: data.userId,
         status: data.status || 'ACTIVE',
-        createdAt: data.createdAt, // optional override (for AI / backdated entries)
+        createdAt: data.createdAt ?? new Date(), // explicit UTC now if not provided
         note: data.note,
       },
     });
