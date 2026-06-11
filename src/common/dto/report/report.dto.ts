@@ -1,5 +1,4 @@
 import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
-import { Transform } from 'class-transformer';
 import { TransactionType } from '../transaction/transaction.dto';
 
 export enum ReportPeriod {
@@ -66,4 +65,3 @@ export class ReportResponseDto {
     expenseChangePercent?: number; // Percentage change
   };
 }
-

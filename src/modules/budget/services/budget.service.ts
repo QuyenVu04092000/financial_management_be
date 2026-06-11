@@ -11,6 +11,7 @@ import {
 import { CategoryRepository } from '../../category/repositories';
 import { SubCategoryRepository } from '../../sub-category/repositories';
 import { TransactionService } from '../../transaction/services';
+import { TransactionRepository } from '../../transaction/repositories';
 import { UserRepository } from '../../user/repositories';
 
 @Injectable()
@@ -20,43 +21,42 @@ export class BudgetService {
     private readonly categoryRepository: CategoryRepository,
     private readonly subCategoryRepository: SubCategoryRepository,
     private readonly transactionService: TransactionService,
+    private readonly transactionRepository: TransactionRepository,
     private readonly prismaUnitOfWorkService: PrismaUnitOfWorkService,
     private readonly userRepository: UserRepository,
   ) {}
 
   async getCategoryBudgets(userId: string, query?: BudgetQueryDto): Promise<CategoryBudgetResponseDto[]> {
+    const user = await this.userRepository.getUserById(null, userId);
+    const startDayMonth = user.startDayMonth || 1;
     const budgets = await this.budgetRepository.getCategoryBudgets(userId, query);
-    const budgetsWithExpenses = await Promise.all(
-      budgets.map(async (budget) => {
-        const totalExpense = await this.transactionService.getTotalExpenseByCategory(
-          budget.categoryId,
-          userId,
-          budget.month,
-        );
-        return new CategoryBudgetResponseDto(budget, totalExpense);
-      }),
-    );
-    return budgetsWithExpenses;
+    if (!budgets.length) return [];
+
+    const filters = budgets.map((budget) => {
+      const period = this.calculatePeriodForMonth(budget.month, startDayMonth);
+      return { categoryId: budget.categoryId, startDate: period.startDate, endDate: period.endDate };
+    });
+
+    const expenseMap = await this.transactionRepository.getExpenseAggregateByCategoryIds(userId, filters);
+    return budgets.map((budget) => new CategoryBudgetResponseDto(budget, expenseMap.get(budget.categoryId) ?? 0));
   }
 
   async getSubCategoryBudgets(userId: string, query?: BudgetQueryDto): Promise<SubCategoryBudgetResponseDto[]> {
-    // Get user to get startDayMonth for period calculation
     const user = await this.userRepository.getUserById(null, userId);
     const startDayMonth = user.startDayMonth || 1;
-
     const budgets = await this.budgetRepository.getSubCategoryBudgets(userId, query);
-    const budgetsWithExpenses = await Promise.all(
-      budgets.map(async (budget) => {
-        const totalExpense = await this.transactionService.getTotalExpenseBySubCategory(
-          budget.subCategoryId,
-          userId,
-          budget.month,
-        );
-        const period = this.calculatePeriodForMonth(budget.month, startDayMonth);
-        return new SubCategoryBudgetResponseDto(budget, totalExpense, period);
-      }),
-    );
-    return budgetsWithExpenses;
+    if (!budgets.length) return [];
+
+    const filters = budgets.map((budget) => {
+      const period = this.calculatePeriodForMonth(budget.month, startDayMonth);
+      return { subCategoryId: budget.subCategoryId, startDate: period.startDate, endDate: period.endDate };
+    });
+
+    const expenseMap = await this.transactionRepository.getExpenseAggregateBySubCategoryIds(userId, filters);
+    return budgets.map((budget) => {
+      const period = this.calculatePeriodForMonth(budget.month, startDayMonth);
+      return new SubCategoryBudgetResponseDto(budget, expenseMap.get(budget.subCategoryId) ?? 0, period);
+    });
   }
 
   async createCategoryBudget(data: CategoryBudgetCreateRequestDto, userId: string): Promise<CategoryBudgetResponseDto> {
@@ -193,24 +193,27 @@ export class BudgetService {
     // Start date: startDayMonth of the given month
     const startDate = new Date(year, monthNum, startDayMonth, 0, 0, 0, 0);
 
-    // End date: (startDayMonth - 1) of next month
+    // End date: (startDayMonth - 1) of next month, clamped to last day of that month
     let nextMonth = monthNum + 1;
     let nextYear = year;
     if (nextMonth > 11) {
       nextMonth = 0;
       nextYear = year + 1;
     }
-    const endDate = new Date(nextYear, nextMonth, startDayMonth - 1, 23, 59, 59, 999);
+    const lastDayOfNextMonth = new Date(nextYear, nextMonth + 1, 0).getDate();
+    const rawEndDay = startDayMonth - 1 === 0 ? lastDayOfNextMonth : startDayMonth - 1;
+    const endDay = Math.min(rawEndDay, lastDayOfNextMonth);
+    const endDate = new Date(nextYear, nextMonth, endDay, 23, 59, 59, 999);
 
     // Format label: "DD/MM/YYYY - DD/MM/YYYY"
     const startDay = startDate.getDate();
     const startMonth = startDate.getMonth() + 1;
     const startYear = startDate.getFullYear();
-    const endDay = endDate.getDate();
+    const endDayNum = endDate.getDate();
     const endMonth = endDate.getMonth() + 1;
     const endYear = endDate.getFullYear();
 
-    const label = `${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear}`;
+    const label = `${startDay}/${startMonth}/${startYear} - ${endDayNum}/${endMonth}/${endYear}`;
 
     return { startDate, endDate, label };
   }

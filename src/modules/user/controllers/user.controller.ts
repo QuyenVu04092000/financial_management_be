@@ -1,11 +1,6 @@
-import { Controller, Param, Body, Get, Query, Post, Put } from '@nestjs/common';
+import { Controller, Param, Body, Get, Query, Put } from '@nestjs/common';
 import { UserService } from '../services';
-import {
-  UserCreateRequestDto,
-  UserUpdateStatusRequestDto,
-  UserUpdateRequestDto,
-  CheckExistsUserRequestDto,
-} from '../../../common/dto';
+import { UserUpdateStatusRequestDto, UserUpdateRequestDto, CheckExistsUserRequestDto } from '../../../common/dto';
 import { NormalResponseDto } from '../../../common/dto';
 import { Public } from '../../auth/decorators/auth.decorator';
 

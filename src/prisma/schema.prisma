@@ -122,6 +122,7 @@ model BudCategory {
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, categoryId, month])
+  @@index([userId, month])
   @@map("bud_category")
 }
 
@@ -138,6 +139,7 @@ model SubBudCategory {
   subCategory SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, subCategoryId, month])
+  @@index([userId, month])
   @@map("sub_bud_category")
 }
 
