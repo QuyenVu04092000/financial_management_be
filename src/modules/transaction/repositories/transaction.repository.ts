@@ -134,7 +134,6 @@ export class TransactionRepository {
     if (!prisma) {
       prisma = this.prisma;
     }
-    await this.getTransactionById(id, userId); // Verify transaction exists and belongs to user
     return await prisma.transaction.update({
       where: { id },
       data: {
@@ -151,7 +150,6 @@ export class TransactionRepository {
     if (!prisma) {
       prisma = this.prisma;
     }
-    await this.getTransactionById(id, userId); // Verify transaction exists and belongs to user
     await prisma.transaction.delete({
       where: { id },
     });
