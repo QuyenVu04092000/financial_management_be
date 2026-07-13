@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsNumber, Min, Matches } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsNumber, Min, Max, Matches } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CategoryBudgetCreateRequestDto {
@@ -8,7 +8,7 @@ export class CategoryBudgetCreateRequestDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
+  @Min(1)
   @Transform(({ value }) => parseFloat(value))
   budget: number;
 
@@ -25,7 +25,7 @@ export class SubCategoryBudgetCreateRequestDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
+  @Min(1)
   @Transform(({ value }) => parseFloat(value))
   budget: number;
 
@@ -39,7 +39,14 @@ export class BudgetQueryDto {
   @IsOptional()
   @IsString()
   @Matches(/^\d{4}-\d{2}$/, { message: 'Month must be in format YYYY-MM' })
-  month?: string; // Format: YYYY-MM
+  month?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(24)
+  @Transform(({ value }) => parseInt(value))
+  limit?: number;
 }
 
 export class CategoryBudgetResponseDto {

@@ -9,36 +9,24 @@ export class BudgetRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getCategoryBudgets(userId: string, query?: BudgetQueryDto): Promise<BudCategory[]> {
-    const where: Prisma.BudCategoryWhereInput = {
-      userId,
-    };
-
-    if (query?.month) {
-      where.month = query.month;
-    }
+    const where: Prisma.BudCategoryWhereInput = { userId };
+    if (query?.month) where.month = query.month;
 
     return await this.prisma.budCategory.findMany({
       where,
-      orderBy: {
-        month: 'desc',
-      },
+      orderBy: { month: 'desc' },
+      take: query?.limit ?? 12,
     });
   }
 
   async getSubCategoryBudgets(userId: string, query?: BudgetQueryDto): Promise<SubBudCategory[]> {
-    const where: Prisma.SubBudCategoryWhereInput = {
-      userId,
-    };
-
-    if (query?.month) {
-      where.month = query.month;
-    }
+    const where: Prisma.SubBudCategoryWhereInput = { userId };
+    if (query?.month) where.month = query.month;
 
     return await this.prisma.subBudCategory.findMany({
       where,
-      orderBy: {
-        month: 'desc',
-      },
+      orderBy: { month: 'desc' },
+      take: query?.limit ?? 12,
     });
   }
 

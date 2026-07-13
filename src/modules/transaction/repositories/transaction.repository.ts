@@ -134,7 +134,6 @@ export class TransactionRepository {
     if (!prisma) {
       prisma = this.prisma;
     }
-    await this.getTransactionById(id, userId); // Verify transaction exists and belongs to user
     return await prisma.transaction.update({
       where: { id },
       data: {
@@ -151,7 +150,6 @@ export class TransactionRepository {
     if (!prisma) {
       prisma = this.prisma;
     }
-    await this.getTransactionById(id, userId); // Verify transaction exists and belongs to user
     await prisma.transaction.delete({
       where: { id },
     });
@@ -211,6 +209,44 @@ export class TransactionRepository {
     });
 
     return Number(result._sum.amount || 0);
+  }
+
+  async getExpenseAggregateByCategoryIds(
+    userId: string,
+    filters: Array<{ categoryId: string; startDate: Date; endDate: Date }>,
+  ): Promise<Map<string, number>> {
+    const result = new Map<string, number>();
+    if (!filters.length) return result;
+
+    await Promise.all(
+      filters.map(async ({ categoryId, startDate, endDate }) => {
+        const agg = await this.prisma.transaction.aggregate({
+          where: { userId, categoryId, type: 'out', createdAt: { gte: startDate, lte: endDate } },
+          _sum: { amount: true },
+        });
+        result.set(categoryId, Number(agg._sum.amount || 0));
+      }),
+    );
+    return result;
+  }
+
+  async getExpenseAggregateBySubCategoryIds(
+    userId: string,
+    filters: Array<{ subCategoryId: string; startDate: Date; endDate: Date }>,
+  ): Promise<Map<string, number>> {
+    const result = new Map<string, number>();
+    if (!filters.length) return result;
+
+    await Promise.all(
+      filters.map(async ({ subCategoryId, startDate, endDate }) => {
+        const agg = await this.prisma.transaction.aggregate({
+          where: { userId, subCategoryId, type: 'out', createdAt: { gte: startDate, lte: endDate } },
+          _sum: { amount: true },
+        });
+        result.set(subCategoryId, Number(agg._sum.amount || 0));
+      }),
+    );
+    return result;
   }
 
   async getTodaySpent(userId: string): Promise<number> {

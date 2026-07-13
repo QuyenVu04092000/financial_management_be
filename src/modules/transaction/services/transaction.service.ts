@@ -484,13 +484,28 @@ export class TransactionService {
     userId: string,
   ): Promise<TransactionResponseDto> {
     try {
-      // Validate subCategoryId if provided
       if (data.subCategoryId) {
         await this.subCategoryRepository.getSubCategoryById(data.subCategoryId, userId);
       }
 
       return await this.prismaUnitOfWorkService.executeInTransaction(async (prisma) => {
+        const old = await this.transactionRepository.getTransactionById(id, userId);
+
+        const oldDelta = old.type === TransactionType.IN ? Number(old.amount) : -Number(old.amount);
+        const newType = data.type ?? old.type;
+        const newAmount = data.amount ?? Number(old.amount);
+        const newDelta = newType === TransactionType.IN ? newAmount : -newAmount;
+        const balanceDiff = newDelta - oldDelta;
+
         const transaction = await this.transactionRepository.updateTransaction(prisma, id, userId, data);
+
+        if (balanceDiff !== 0) {
+          await prisma.user.update({
+            where: { id: userId },
+            data: { balance: { increment: balanceDiff } },
+          });
+        }
+
         return new TransactionResponseDto(transaction);
       });
     } catch (error) {
@@ -504,7 +519,17 @@ export class TransactionService {
   async deleteTransaction(id: string, userId: string): Promise<void> {
     try {
       await this.prismaUnitOfWorkService.executeInTransaction(async (prisma) => {
+        const old = await this.transactionRepository.getTransactionById(id, userId);
+
+        // Reverse the balance effect of this transaction
+        const reverseDelta = old.type === TransactionType.IN ? -Number(old.amount) : Number(old.amount);
+
         await this.transactionRepository.deleteTransaction(prisma, id, userId);
+
+        await prisma.user.update({
+          where: { id: userId },
+          data: { balance: { increment: reverseDelta } },
+        });
       });
     } catch (error) {
       if (error instanceof NotFoundException) {
